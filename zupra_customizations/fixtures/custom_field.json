@@ -1,0 +1,56 @@
+[
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-customer_enquiry",
+    "dt": "Quotation",
+    "label": "Customer Enquiry",
+    "fieldname": "customer_enquiry",
+    "fieldtype": "Link",
+    "options": "Customer Inquiry",
+    "insert_after": "naming_series",
+    "in_list_view": 0,
+    "in_standard_filter": 1,
+    "translatable": 0
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-company_name",
+    "dt": "Quotation",
+    "label": "Company / Site Name",
+    "fieldname": "company_name",
+    "fieldtype": "Data",
+    "insert_after": "customer_enquiry",
+    "translatable": 0
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-type_of_tank",
+    "dt": "Quotation",
+    "label": "Type of Tank",
+    "fieldname": "type_of_tank",
+    "fieldtype": "Select",
+    "options": "\nWater\nChemical\nDiesel\nSeptic\nOther",
+    "insert_after": "customer_enquiry",
+    "translatable": 0
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-tank_size_capacity",
+    "dt": "Quotation",
+    "label": "Tank Size / Capacity",
+    "fieldname": "tank_size_capacity",
+    "fieldtype": "Data",
+    "insert_after": "type_of_tank",
+    "translatable": 0
+  },
+  {
+    "doctype": "Custom Field",
+    "name": "Quotation-number_of_tanks",
+    "dt": "Quotation",
+    "label": "Number of Tanks",
+    "fieldname": "number_of_tanks",
+    "fieldtype": "Int",
+    "insert_after": "tank_size_capacity",
+    "translatable": 0
+  }
+]

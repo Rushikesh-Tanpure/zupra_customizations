@@ -1,0 +1,219 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-04-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "status",
+  "inquiry_date",
+  "requested_delivery_date",
+  "comment",
+  "customer_details_section",
+  "customer_name",
+  "email_address",
+  "mobile_no",
+  "company_name",
+  "column_break_customer",
+  "company_address",
+  "custom_country",
+  "service_inquiry_section",
+  "type_of_tank",
+  "tank_size_capacity",
+  "column_break_service",
+  "number_of_tanks",
+  "any_previous_cleaning_history",
+  "previous_cleaning_details",
+  "additional_info_section",
+  "additional_info",
+  "site_images"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "no_copy": 1,
+   "options": "CINQ-.YYYY.-",
+   "print_hide": 1,
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Open\nReplied\nClosed",
+   "default": "Open",
+   "reqd": 1
+  },
+  {
+   "fieldname": "inquiry_date",
+   "fieldtype": "Date",
+   "label": "Inquiry Received Date",
+   "default": "Today",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "requested_delivery_date",
+   "fieldtype": "Date",
+   "label": "Requested Delivery Date"
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Small Text",
+   "label": "Comment"
+  },
+  {
+   "fieldname": "customer_details_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "Email Address",
+   "options": "Email",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company Name / Site Name"
+  },
+  {
+   "fieldname": "column_break_customer",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "company_address",
+   "fieldtype": "Small Text",
+   "label": "Company Address"
+  },
+  {
+   "fieldname": "custom_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "service_inquiry_section",
+   "fieldtype": "Section Break",
+   "label": "Service Inquiry"
+  },
+  {
+   "fieldname": "type_of_tank",
+   "fieldtype": "Select",
+   "label": "Type of Tank",
+   "options": "\nWater\nChemical\nDiesel\nSeptic\nOther"
+  },
+  {
+   "fieldname": "tank_size_capacity",
+   "fieldtype": "Data",
+   "label": "Tank Size / Capacity"
+  },
+  {
+   "fieldname": "column_break_service",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "number_of_tanks",
+   "fieldtype": "Int",
+   "label": "Number of Tanks"
+  },
+  {
+   "fieldname": "any_previous_cleaning_history",
+   "fieldtype": "Select",
+   "label": "Any Previous Cleaning History",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "previous_cleaning_details",
+   "fieldtype": "Small Text",
+   "label": "Previous Cleaning Details",
+   "depends_on": "eval:doc.any_previous_cleaning_history=='Yes'"
+  },
+  {
+   "fieldname": "additional_info_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Info"
+  },
+  {
+   "fieldname": "additional_info",
+   "fieldtype": "Text",
+   "label": "Additional Info"
+  },
+  {
+   "fieldname": "site_images",
+   "fieldtype": "Attach",
+   "label": "Upload Site Images or Documents"
+  }
+ ],
+ "links": [],
+ "modified": "2026-04-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Zupra Customizations",
+ "name": "Customer Inquiry",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Blue",
+   "title": "Open"
+  },
+  {
+   "color": "Green",
+   "title": "Replied"
+  },
+  {
+   "color": "Red",
+   "title": "Closed"
+  }
+ ],
+ "title_field": "customer_name",
+ "track_changes": 1
+}

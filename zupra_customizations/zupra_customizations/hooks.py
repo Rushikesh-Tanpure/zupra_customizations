@@ -32,6 +32,14 @@ app_license = "mit"
 # web_include_css = "/assets/zupra_customizations/css/zupra_customizations.css"
 # web_include_js = "/assets/zupra_customizations/js/zupra_customizations.js"
 
+app_include_css = "/assets/zupra_customizations/css/zupra_desk.css"
+app_include_js = [
+    "/assets/zupra_customizations/js/customer_inquiry.js",
+    "/assets/zupra_customizations/js/quotation_customer_enquiry.js",
+    "/assets/zupra_customizations/js/sales_order.js",
+    "/assets/zupra_customizations/js/zupra_desk.js"
+]
+
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "zupra_customizations/public/scss/website"
 

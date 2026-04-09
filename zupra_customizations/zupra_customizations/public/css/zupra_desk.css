@@ -1,0 +1,921 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ZUPRA TECH — FRAPPE v15 DESK THEME  v2.0
+   Changes:
+     1. Logo       — "Z" badge + "Zupra Tech" brand text
+     2. Layout     — full-width flex: sidebar 64px | main content flex:1
+     3. Sidebar    — narrow icon+label-below, no scrollbar, "More" popup
+     4. Top bar    — always full viewport width
+     5. Background — soft bluish tone, cards stay white
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --z-navy:         #1a1f36;
+  --z-navy-mid:     #252b4a;
+  --z-navy-hover:   #2d3a4a;
+  --z-accent:       #4b7bf5;
+  --z-accent-hov:   #3a6ae3;
+  --z-text-bright:  #e8ecf4;
+  --z-text-dim:     #8892b0;
+  --z-bg:           #f0f4ff;
+  --z-bg-alt:       #e8edf8;
+  --z-icon-box:     rgba(255,255,255,0.08);
+  --z-icon-box-hov: rgba(255,255,255,0.15);
+  --z-sidebar-w:    220px;
+  --z-navbar-h:     48px;   /* updated at runtime by JS via _zupra_sync_navbar_height() */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1 — LOGO
+   CSS pseudo-elements render the "Z" badge (::before) and "Zupra Tech" text
+   (::after).  JS (_zupra_inject_logo) hides the native img and strips the
+   stray "No Logo" text node from the brand anchor.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Force-hide ALL default logo images however Frappe injects them */
+.navbar-home img,
+.navbar-home .app-logo,
+.navbar .app-logo,
+header img.app-logo {
+  display: none !important;
+  width:   0 !important;
+  height:  0 !important;
+}
+
+.navbar-home,
+.navbar-brand.navbar-home {
+  display:         flex !important;
+  align-items:     center !important;
+  gap:             10px !important;
+  padding:         0 10px 0 12px !important;  /* 12px left ≈ centres Z badge over 64px column */
+  margin:          0 !important;
+  text-decoration: none !important;
+  font-size:       0 !important;    /* hides bare "No Logo" text node */
+  white-space:     nowrap !important;
+  /* overflow:hidden removed — was clipping the logo on some transitions */
+}
+
+/* "Z" white badge */
+.navbar-home::before {
+  content:         "Z" !important;
+  display:         inline-flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  width:           34px !important;
+  height:          34px !important;
+  min-width:       34px !important;
+  background:      #ffffff !important;
+  border-radius:   8px !important;
+  font-size:       20px !important;
+  font-weight:     900 !important;
+  color:           #1a1f36 !important;
+  line-height:     1 !important;
+  flex-shrink:     0 !important;
+}
+
+/* "Zupra Tech" brand text */
+.navbar-home::after {
+  content:     "Zupra Tech" !important;
+  color:       #ffffff !important;
+  font-size:   15px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+/* 64px zone: centres the "Z" badge over the sidebar column */
+.z-logo-zone {
+  width:           var(--z-sidebar-w) !important;
+  flex-shrink:     0 !important;
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  align-self:      stretch !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2 — FULL-WIDTH FLEX LAYOUT
+   Frappe v15 root structure:
+     .body-container.container-fluid
+       .layout-side-section   (sidebar wrapper)
+       .layout-main           (main content)
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Root flex container — remove Bootstrap gutter, enforce full width */
+.body-container,
+.container-fluid.body-container {
+  display:        flex !important;
+  flex-direction: row !important;
+  align-items:    stretch !important;
+  padding-left:   0 !important;
+  padding-right:  0 !important;
+  max-width:      100% !important;
+  width:          100% !important;
+  overflow:       hidden !important;
+  margin-left:    0 !important;
+  margin-right:   0 !important;
+}
+
+/* Sidebar wrapper — fixed narrow width (spacer for .desk-sidebar on workspace pages) */
+/* NOTE: overflow is intentionally NOT hidden here — list pages need .layout-side-section
+   to be unclipped so the .list-sidebar filter panel inside it is visible.
+   The list-page override in Section 11 widens it; this block is the workspace spacer. */
+.layout-side-section {
+  width:       var(--z-sidebar-w) !important;
+  min-width:   var(--z-sidebar-w) !important;
+  max-width:   var(--z-sidebar-w) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Main content — take all remaining space */
+.layout-main {
+  flex:       1 1 0 !important;
+  min-width:  0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+/* Remove max-width from inner content wrappers */
+.page-container,
+.layout-main-section-wrapper,
+.layout-main-section {
+  max-width: none !important;
+  width:     100% !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3 — TOP BAR: Full viewport width, always
+═══════════════════════════════════════════════════════════════════════════ */
+.navbar {
+  background:    var(--z-navy) !important;
+  border-bottom: 1px solid var(--z-navy-mid) !important;
+  width:         100% !important;
+  max-width:     none !important;
+  padding-left:  0 !important;      /* logo zone handles left alignment */
+  padding-right: 12px !important;
+}
+
+.navbar .nav-link,
+.navbar .nav-link.text-muted { color: var(--z-text-bright) !important; }
+
+.navbar .vertical-bar { border-right-color: rgba(255,255,255,0.12) !important; }
+
+.navbar .search-bar input.form-control {
+  background:   var(--z-navy-mid) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  color:        var(--z-text-bright) !important;
+}
+.navbar .search-bar input.form-control::placeholder { color: var(--z-text-dim) !important; }
+.navbar .search-bar svg { stroke: var(--z-text-dim) !important; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4 — SIDEBAR: Narrow (64px), icon on top + tiny label below, no scrollbar
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Sidebar container */
+.desk-sidebar {
+  background:     var(--z-navy) !important;
+  border-right:   1px solid var(--z-navy-mid) !important;
+  padding:        8px 0 0 !important;
+  width:          var(--z-sidebar-w) !important;
+  height:         100% !important;
+  overflow:       hidden !important;   /* ← no scrollbar ever */
+  display:        flex !important;
+  flex-direction: column !important;
+  box-sizing:     border-box !important;
+}
+
+/* Hide section labels — no room in the narrow rail */
+.desk-sidebar .standard-sidebar-label,
+.desk-sidebar .sidebar-group-label {
+  display: none !important;
+}
+
+/* Hide the sidebar search / filter */
+.desk-sidebar .sidebar-search-input,
+.desk-sidebar .list-sidebar .form-control {
+  display: none !important;
+}
+
+/* ── Item link: horizontal (icon left, label right) — ERPNext style ── */
+/* NOTE: .sidebar-menu .sidebar-item > a is intentionally NOT in this list;
+   that selector matches list-sidebar filter items and must not be width-constrained */
+.desk-sidebar .standard-sidebar-item > a,
+.desk-sidebar .standard-sidebar-item > span,
+.desk-sidebar .sidebar-item > a {
+  display:         flex !important;
+  flex-direction:  row !important;
+  align-items:     center !important;
+  justify-content: flex-start !important;
+  gap:             10px !important;
+  width:           calc(var(--z-sidebar-w) - 16px) !important;
+  padding:         9px 12px !important;
+  margin:          2px 8px !important;
+  border-radius:   8px !important;
+  color:           var(--z-text-bright) !important;
+  cursor:          pointer !important;
+  text-decoration: none !important;
+  transition:      background 0.15s, color 0.15s !important;
+  box-sizing:      border-box !important;
+  overflow:        hidden !important;
+}
+
+/* ── Hover ── */
+.desk-sidebar .standard-sidebar-item > a:hover,
+.desk-sidebar .sidebar-item > a:hover {
+  background:      var(--z-navy-hover) !important;
+  color:           #ffffff !important;
+  text-decoration: none !important;
+}
+
+/* ── Active / selected ── */
+.desk-sidebar .standard-sidebar-item.selected > a,
+.desk-sidebar .standard-sidebar-item.selected > span,
+.desk-sidebar .sidebar-item.selected > a {
+  background:  var(--z-accent) !important;
+  color:       #ffffff !important;
+  font-weight: 500 !important;
+}
+.desk-sidebar .standard-sidebar-item.selected > a:hover,
+.desk-sidebar .sidebar-item.selected > a:hover {
+  background: var(--z-accent-hov) !important;
+}
+
+/* ── Icon container ── */
+.desk-sidebar .standard-sidebar-item > a .es-icon,
+.desk-sidebar .standard-sidebar-item > a .icon,
+.desk-sidebar .sidebar-item > a .es-icon,
+.desk-sidebar .sidebar-item > a .icon {
+  display:         inline-flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  width:           24px !important;
+  height:          24px !important;
+  border-radius:   6px !important;
+  background:      var(--z-icon-box) !important;
+  flex-shrink:     0 !important;
+  transition:      background 0.15s !important;
+  --icon-stroke:   var(--z-text-dim) !important;
+}
+
+.desk-sidebar .standard-sidebar-item > a:hover .es-icon,
+.desk-sidebar .standard-sidebar-item > a:hover .icon,
+.desk-sidebar .sidebar-item > a:hover .es-icon,
+.desk-sidebar .sidebar-item > a:hover .icon {
+  background:    var(--z-icon-box-hov) !important;
+  --icon-stroke: #ffffff !important;
+}
+
+.desk-sidebar .standard-sidebar-item.selected > a .es-icon,
+.desk-sidebar .standard-sidebar-item.selected > a .icon,
+.desk-sidebar .sidebar-item.selected > a .es-icon,
+.desk-sidebar .sidebar-item.selected > a .icon {
+  background:    var(--z-accent) !important;
+  --icon-stroke: #ffffff !important;
+}
+
+/* ── Item label text (to the right of icon) ── */
+.desk-sidebar .standard-sidebar-item > a > span:not(.es-icon):not(.icon),
+.desk-sidebar .sidebar-item > a > span:not(.es-icon):not(.icon) {
+  font-size:     13px !important;
+  font-weight:   500 !important;
+  line-height:   1.3 !important;
+  text-align:    left !important;
+  flex:          1 !important;
+  overflow:      hidden !important;
+  text-overflow: ellipsis !important;
+  white-space:   nowrap !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5 — SIDEBAR "MORE" BUTTON  (injected by JS at runtime)
+═══════════════════════════════════════════════════════════════════════════ */
+#z-more-btn {
+  display:         flex !important;
+  flex-direction:  row !important;
+  align-items:     center !important;
+  justify-content: flex-start !important;
+  gap:             10px !important;
+  width:           calc(var(--z-sidebar-w) - 16px) !important;
+  padding:         9px 12px !important;
+  margin:          auto 8px 8px !important;  /* pushes to bottom */
+  border-radius:   8px !important;
+  background:      none !important;
+  border:          none !important;
+  color:           var(--z-text-dim) !important;
+  cursor:          pointer !important;
+  font-size:       13px !important;
+  font-weight:     500 !important;
+  font-family:     inherit !important;
+  flex-shrink:     0 !important;
+}
+#z-more-btn:hover {
+  background: var(--z-navy-hover) !important;
+  color:      var(--z-text-bright) !important;
+}
+#z-more-btn .z-more-dots {
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  gap:             3px !important;
+}
+#z-more-btn .z-dot {
+  width:         4px !important;
+  height:        4px !important;
+  border-radius: 50% !important;
+  background:    currentColor !important;
+  display:       inline-block !important;
+}
+
+/* ── More popup (dark floating panel) ── */
+#z-more-popup {
+  position:      fixed !important;
+  left:          calc(var(--z-sidebar-w) + 6px) !important;
+  background:    var(--z-navy) !important;
+  border:        1px solid var(--z-navy-mid) !important;
+  border-radius: 10px !important;
+  padding:       6px !important;
+  z-index:       99999 !important;
+  min-width:     172px !important;
+  box-shadow:    0 8px 32px rgba(0,0,0,0.45) !important;
+}
+
+#z-more-popup .z-popup-item {
+  display:         flex !important;
+  align-items:     center !important;
+  gap:             10px !important;
+  padding:         7px 10px !important;
+  border-radius:   7px !important;
+  color:           var(--z-text-bright) !important;
+  text-decoration: none !important;
+  font-size:       13px !important;
+  font-weight:     500 !important;
+  cursor:          pointer !important;
+  transition:      background 0.12s !important;
+  white-space:     nowrap !important;
+}
+#z-more-popup .z-popup-item:hover {
+  background:      var(--z-navy-hover) !important;
+  text-decoration: none !important;
+  color:           #ffffff !important;
+}
+#z-more-popup .z-popup-icon {
+  display:         inline-flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  width:           26px !important;
+  height:          26px !important;
+  border-radius:   6px !important;
+  background:      var(--z-icon-box) !important;
+  flex-shrink:     0 !important;
+  --icon-stroke:   var(--z-text-dim) !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6 — BACKGROUND & CARDS
+═══════════════════════════════════════════════════════════════════════════ */
+html,
+body,
+.page-container,
+.layout-main,
+.desk-body,
+.main-section {
+  background: #ffffff !important;
+}
+
+/* Cards / forms / modals stay white */
+.widget,
+.widget-body,
+.card,
+.form-page,
+.layout-main-section,
+.page-head,
+.frappe-card {
+  background: #ffffff !important;
+}
+
+/* Workspace shortcut + number cards */
+.widget.shortcut-widget-box,
+.widget.number-widget-box,
+.widget.links-widget-box {
+  background:    #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow:    0 2px 10px rgba(67,97,238,0.08) !important;
+  transition:    box-shadow 0.2s, transform 0.2s !important;
+}
+.widget.shortcut-widget-box:hover {
+  box-shadow: 0 6px 22px rgba(75,123,245,0.16) !important;
+  transform:  translateY(-2px) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7 — REMOVE PAGE-BODY MARGINS (the container gap fix)
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* The main culprit — .page-body has Bootstrap container padding */
+.page-body,
+.page-body.container,
+.page-body.container-fluid {
+  padding-left:  0 !important;
+  padding-right: 0 !important;
+  margin-left:   0 !important;
+  margin-right:  0 !important;
+  max-width:     100% !important;
+  width:         100% !important;
+}
+
+/* Inner content wrapper inside page-body */
+.page-body .page-wrapper,
+.page-body .layout-main-section-wrapper,
+.page-body .layout-main-section,
+.page-body .page-content {
+  padding-left:  0 !important;
+  padding-right: 0 !important;
+  margin-left:   0 !important;
+  margin-right:  0 !important;
+  max-width:     100% !important;
+  width:         100% !important;
+}
+
+/* ── Sidebar: fixed, starts flush below navbar ── */
+.desk-sidebar {
+  position:   fixed !important;
+  top:        var(--z-navbar-h) !important;          /* flush with navbar bottom */
+  left:       0 !important;
+  width:      var(--z-sidebar-w) !important;
+  min-width:  var(--z-sidebar-w) !important;
+  height:     calc(100vh - var(--z-navbar-h)) !important;
+  overflow:   hidden !important;
+  z-index:    1000 !important;
+  margin:     0 !important;
+  padding:    8px 0 0 !important;
+}
+
+/* ── Sidebar wrapper in flex layout ── */
+/* overflow:hidden removed — list pages need .layout-side-section unclipped
+   (see Section 11 for list-page overrides) */
+.layout-side-section {
+  width:      var(--z-sidebar-w) !important;
+  min-width:  var(--z-sidebar-w) !important;
+  max-width:  var(--z-sidebar-w) !important;
+  flex-shrink: 0 !important;
+  padding:    0 !important;
+  margin:     0 !important;
+}
+
+/* ── Main content pushes right of sidebar only ── */
+.layout-main {
+  flex:        1 1 0 !important;
+  min-width:   0 !important;
+  margin-left: 0 !important;    /* flex handles offset, NOT margin */
+  padding:     0 !important;
+  width:       100% !important;
+  overflow-x:  hidden !important;
+}
+
+/* ── Body container: clean flex, no Bootstrap gutter ── */
+.body-container,
+.container-fluid.body-container {
+  display:        flex !important;
+  flex-direction: row !important;
+  align-items:    stretch !important;
+  padding:        0 !important;
+  margin:         0 !important;
+  max-width:      100% !important;
+  width:          100% !important;
+  overflow:       hidden !important;
+}
+
+/* ── Navbar full width ── */
+.navbar {
+  width:         100vw !important;
+  max-width:     none !important;
+  padding-left:  0 !important;
+  padding-right: 12px !important;
+}
+
+/* ── Remove ALL other conflicting sidebar position rules ── */
+/* (The fixed rules below were the conflict causing the gap) */
+.layout-main-section-wrapper,
+.page-container,
+.desk-page,
+.page-wrapper {
+  padding-left:  0 !important;
+  margin-left:   0 !important;
+  max-width:     100% !important;
+  width:         100% !important;
+}
+
+body,
+#page-container,
+.app-content,
+#main-container,
+.frappe-app,
+.app-wrapper,
+#app {
+  padding:  0 !important;
+  margin:   0 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8 — PAGE-HEAD BAR  (form/list action buttons)
+   Hidden on workspace/home pages (no useful actions there).
+   JS (_zupra_toggle_page_head) adds .z-show when real action buttons exist
+   (Save, Submit, Cancel, etc.), fully restoring the bar with proper styling.
+   NOTE: only .page-head itself is hidden — children are NOT individually hidden
+   so they all become visible once the parent gets .z-show.
+═══════════════════════════════════════════════════════════════════════════ */
+/* .page-head,
+[data-page-route] .page-head {
+  display: none !important;
+} */
+
+/* Full bar restored with visual styling when action buttons are present */
+.page-head.z-show {
+  display:         flex !important;
+  align-items:     center !important;
+  background:      #ffffff !important;
+  border-bottom:   1px solid #e5e7eb !important;
+  padding:         6px 15px !important;
+  position:        sticky !important;
+  top:             0 !important;
+  z-index:         100 !important;
+  min-height:      44px !important;
+  box-shadow:      0 1px 4px rgba(0,0,0,0.06) !important;
+  flex-wrap:       wrap !important;
+  gap:             4px !important;
+}
+
+/* Ensure body-container butts directly against the navbar — no extra top gap */
+.body-container,
+.container-fluid.body-container {
+  margin-top:  0 !important;
+  padding-top: 0 !important;
+}
+
+/* layout-side-section placeholder must not add any top offset either */
+.layout-side-section {
+  margin-top:  0 !important;
+  padding-top: 0 !important;
+}
+
+/* Main content: scroll independently within its flex column */
+.layout-main {
+  height:     calc(100vh - var(--z-navbar-h)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  position:   relative !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   9 — SIDEBAR SUBMENUS (hover popup) + DROP-ICON REMOVAL
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Remove dropdown arrows — we replace them with hover popups */
+.desk-sidebar .drop-icon,
+.desk-sidebar .standard-sidebar-item .drop-icon,
+.desk-sidebar .sidebar-item .drop-icon {
+  display: none !important;
+}
+
+/* Hide the inline child-item lists; shown via hover popup instead */
+.desk-sidebar .sidebar-child-items,
+.desk-sidebar .standard-sidebar-item .sidebar-child-items {
+  display: none !important;
+}
+
+/* Hover submenu popup panel */
+.z-submenu-popup {
+  position:      fixed;
+  left:          var(--z-sidebar-w);   /* right edge of sidebar */
+  background:    var(--z-navy);
+  border:        1px solid var(--z-navy-mid);
+  border-radius: 10px;
+  padding:       6px;
+  z-index:       99999;
+  min-width:     180px;
+  box-shadow:    0 8px 32px rgba(0,0,0,0.45);
+  transform:     translateX(-8px);
+  opacity:       0;
+  transition:    transform 0.18s ease, opacity 0.18s ease;
+  pointer-events: none;
+}
+
+.z-submenu-popup.z-visible {
+  transform:      translateX(0);
+  opacity:        1;
+  pointer-events: auto;
+}
+
+.z-submenu-popup a {
+  display:         flex;
+  align-items:     center;
+  gap:             10px;
+  padding:         8px 12px;
+  border-radius:   7px;
+  color:           var(--z-text-bright);
+  text-decoration: none;
+  font-size:       13px;
+  font-weight:     500;
+  white-space:     nowrap;
+}
+
+.z-submenu-popup a:hover {
+  background: var(--z-navy-hover);
+  color:      #ffffff;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  10 — ACCOUNTING HOVER POPUP  (#z-hover-popup)
+  Appears to the right of the sidebar on hover; defined items are hardcoded
+  in _zupra_init_hover_popups() in zupra_desk.js.
+═══════════════════════════════════════════════════════════════════════════ */
+#z-hover-popup {
+  position:       fixed !important;
+  left:           calc(var(--z-sidebar-w) + 2px) !important;
+  background:     var(--z-navy) !important;
+  border:         1px solid var(--z-navy-mid) !important;
+  border-radius:  10px !important;
+  padding:        6px !important;
+  z-index:        999999 !important;
+  min-width:      200px !important;
+  box-shadow:     0 8px 32px rgba(0,0,0,0.5) !important;
+  transform:      translateX(-10px) !important;
+  opacity:        0 !important;
+  transition:     transform 0.18s ease, opacity 0.18s ease !important;
+  pointer-events: none !important;
+}
+#z-hover-popup.z-visible {
+  transform:      translateX(0) !important;
+  opacity:        1 !important;
+  pointer-events: auto !important;
+}
+#z-hover-popup a {
+  display:         flex !important;
+  align-items:     center !important;
+  gap:             10px !important;
+  padding:         9px 14px !important;
+  border-radius:   7px !important;
+  color:           var(--z-text-bright) !important;
+  text-decoration: none !important;
+  font-size:       13px !important;
+  font-weight:     500 !important;
+  white-space:     nowrap !important;
+  transition:      background 0.12s !important;
+}
+#z-hover-popup a:hover {
+  background: var(--z-navy-hover) !important;
+  color:      #ffffff !important;
+}
+#z-hover-popup .z-popup-label {
+  font-size:      10px !important;
+  color:          var(--z-text-dim) !important;
+  padding:        4px 14px 2px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  11 — LIST PAGE FILTER SIDEBAR  (Issue #1: Home link; Issue #2: scrollbar)
+  On list pages .layout-side-section wraps .list-sidebar (the filter panel),
+  not the icon-nav spacer.  We must un-constrain width and re-enable scroll.
+  padding-left pushes list sidebar content clear of the fixed .desk-sidebar.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ALL rules in Section 11 are scoped to body.zupra-list-page.
+   This class is set by JS only when route[0] === 'List' (list pages).
+   Frappe reuses the .list-sidebar class on workspace pages too, so
+   CSS :has() selectors cannot distinguish them — the body class can. */
+
+/* Un-constrain the inner filter-sidebar column on list pages only.
+   Targets .layout-main-section-wrapper > .layout-side-section (inner panel),
+   NOT .body-container > .layout-side-section (outer nav spacer, stays at --z-sidebar-w). */
+body.zupra-list-page .layout-main-section-wrapper > .layout-side-section {
+  width:       260px !important;
+  min-width:   260px !important;
+  max-width:   260px !important;
+  overflow:    visible !important;
+  padding:     0 !important;
+  box-sizing:  border-box !important;
+  flex-shrink: 0 !important;
+  background:  #ffffff !important;
+}
+
+/* List filter panel — visible and independently scrollable */
+body.zupra-list-page .list-sidebar,
+body.zupra-list-page .list-sidebar-wrapper {
+  display:    block !important;
+  visibility: visible !important;
+  opacity:    1 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: calc(100vh - var(--z-navbar-h, 48px)) !important;
+  min-width:  260px !important;
+  position:   sticky !important;
+  top:        var(--z-navbar-h, 48px) !important;
+  background: #ffffff !important;
+}
+
+/* Filter items inside the list sidebar */
+body.zupra-list-page .list-sidebar .sidebar-label,
+body.zupra-list-page .list-sidebar .list-sidebar-button,
+body.zupra-list-page .list-sidebar h6,
+body.zupra-list-page .list-sidebar a,
+body.zupra-list-page .list-sidebar .sidebar-item {
+  visibility: visible !important;
+  opacity:    1 !important;
+}
+
+/* Thin 4px scrollbar (webkit) */
+body.zupra-list-page .list-sidebar::-webkit-scrollbar,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar {
+  width: 4px !important;
+}
+body.zupra-list-page .list-sidebar::-webkit-scrollbar-track,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+body.zupra-list-page .list-sidebar::-webkit-scrollbar-thumb,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar-thumb {
+  background:    #c0c8d8 !important;
+  border-radius: 4px !important;
+}
+body.zupra-list-page .list-sidebar::-webkit-scrollbar-thumb:hover,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #8892b0 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  12 — INNER LAYOUT GAP FIX  (Issue 1 — yellow gap)
+  .layout-main-section-wrapper holds .layout-side-section + .layout-main-section.
+  It must be an explicit flex row with zero gap so the gradient background
+  from .layout-main never shows through as a coloured stripe.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Global wrapper reset — flex-row only applied on list pages (Section 14).
+   Removing global flex here so form/workspace pages keep Frappe's default layout
+   (comments below form, not beside it). */
+.layout-main-section-wrapper {
+  width:      100% !important;
+  background: #ffffff !important;
+}
+
+/* Workspace/home/form pages — collapse the inner sidebar entirely.
+   body.zupra-list-page is toggled by JS based on route[0] === 'List',
+   so this is accurate on every page transition. */
+body:not(.zupra-list-page) .layout-main-section-wrapper > .layout-side-section {
+  display:   none !important;
+  width:     0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding:   0 !important;
+  margin:    0 !important;
+  border:    none !important;
+  overflow:  hidden !important;
+}
+
+/* List pages — sidebar column: no right gap, subtle separator */
+body.zupra-list-page .layout-main-section-wrapper > .layout-side-section {
+  margin-right:  0 !important;
+  padding-right: 0 !important;
+  border-right:  1px solid #e5e7eb !important;
+}
+
+/* Content column — flush left, takes all remaining space on every page */
+.layout-main-section-wrapper > .layout-main-section {
+  flex:        1 1 0 !important;
+  min-width:   0 !important;
+  margin-left: 0 !important;
+  width:       100% !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  13 — HOME PAGE TOP GAP  (Issue 2 — CSS fallback)
+  JS (_zupra_fix_home_top_gap) is authoritative for route-aware removal.
+  These rules act as a static fallback that fires before JS runs.
+  Target only the first .page-container so list/form pages are unaffected.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Zero any top padding Frappe adds to .page-container on first render */
+.layout-main > .page-container:first-child {
+  padding-top: 0 !important;
+  margin-top:  0 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  14 — LIST PAGE FILTER SIDEBAR  (body.zupra-list-page set by JS)
+  All selectors use body.zupra-list-page (only set when route[0] === 'List').
+  .layout-main-section-wrapper > .layout-side-section targets only the INNER
+  filter panel column, never the outer nav spacer (.body-container > .layout-side-section).
+  Specificity (0-3-1) beats Section 11 (0-2-1) and Section 12's border-right (0-3-1,
+  same spec but Section 14 appears later → wins for width/padding/background).
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Inner filter panel column — 260px, white, flush (no nav padding needed) */
+body.zupra-list-page .layout-main-section-wrapper > .layout-side-section {
+  width:      260px !important;
+  min-width:  260px !important;
+  max-width:  260px !important;
+  overflow:   visible !important;
+  padding:    0 !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  background: #ffffff !important;
+}
+
+/* Filter panel — 260px, independently scrollable, white background */
+body.zupra-list-page .list-sidebar,
+body.zupra-list-page .list-sidebar-wrapper {
+  width:       260px !important;
+  min-width:   260px !important;
+  max-width:   260px !important;
+  overflow-x:  hidden !important;
+  overflow-y:  auto !important;
+  flex-shrink: 0 !important;
+  padding:     12px !important;
+  box-sizing:  border-box !important;
+  height:      calc(100vh - var(--z-navbar-h, 48px)) !important;
+  position:    sticky !important;
+  top:         var(--z-navbar-h, 48px) !important;
+  align-self:  flex-start !important;
+  background:  #ffffff !important;
+}
+
+/* All children — clear overflow/truncation that clips filter labels */
+body.zupra-list-page .list-sidebar *,
+body.zupra-list-page .list-sidebar-wrapper * {
+  overflow:      visible !important;
+  text-overflow: unset !important;
+  white-space:   normal !important;
+  max-width:     100% !important;
+  box-sizing:    border-box !important;
+}
+
+/* Labels, headings, buttons, links — full word-wrap */
+body.zupra-list-page .list-sidebar .sidebar-label,
+body.zupra-list-page .list-sidebar h6,
+body.zupra-list-page .list-sidebar .list-sidebar-button,
+body.zupra-list-page .list-sidebar a,
+body.zupra-list-page .list-sidebar .sidebar-stat,
+body.zupra-list-page .list-sidebar .filter-label {
+  display:     block !important;
+  width:       100% !important;
+  overflow:    visible !important;
+  white-space: normal !important;
+  word-break:  break-word !important;
+  color:       #333 !important;
+  font-size:   13px !important;
+  padding:     4px 0 !important;
+}
+
+/* Thin 3px webkit scrollbar */
+body.zupra-list-page .list-sidebar::-webkit-scrollbar,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar {
+  width: 3px !important;
+}
+body.zupra-list-page .list-sidebar::-webkit-scrollbar-thumb,
+body.zupra-list-page .list-sidebar-wrapper::-webkit-scrollbar-thumb {
+  background:    #c0c8d8 !important;
+  border-radius: 4px !important;
+}
+
+/* Layout wrapper — full height flex row on list pages */
+body.zupra-list-page .layout-main-section-wrapper {
+  display:        flex !important;
+  flex-direction: row !important;
+  align-items:    flex-start !important;
+  gap:            0 !important;
+  padding:        0 !important;
+  overflow:       hidden !important;
+  height:         calc(100vh - var(--z-navbar-h, 48px)) !important;
+}
+
+/* Content column — flex remainder, scrolls independently */
+body.zupra-list-page .layout-main-section {
+  flex:       1 1 0 !important;
+  min-width:  0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height:     100% !important;
+  padding:    16px !important;
+}
+
+/* ── Form tabs: prevent sticky/floating behaviour ── */
+.form-tabs-list,
+.frappe-tabs .nav.nav-tabs {
+  position: static !important;
+  top:      unset !important;
+  z-index:  unset !important;
+}

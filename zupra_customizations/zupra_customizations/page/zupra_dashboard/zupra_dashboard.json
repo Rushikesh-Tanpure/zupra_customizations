@@ -6,7 +6,7 @@
     "name": "zupra-dashboard",
     "page_name": "zupra-dashboard",
     "roles": [],
-    "standard": "No",
+    "standard": "Yes",
     "system_manager_editable": 1,
     "title": "Welcome \u2014 Zupra Tech"
 }

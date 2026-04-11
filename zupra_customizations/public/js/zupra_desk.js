@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-//  ZUPRA TECH — Global Desk JS  (Frappe v15)  v2.0
+//  ZUPRA TECH — Global Desk JS  (Frappe v16)  v2.1
 //
 //  1. Logo injection       — "Z" badge + "Zupra Tech" (belt-and-suspenders)
 //  2. Sidebar overflow     — measures height, hides overflow items, adds
@@ -7,7 +7,7 @@
 //  3. Sidebar active sync  — keeps selected state on route change
 // ═══════════════════════════════════════════════════════════════════════════
 
-frappe.ready(function () {
+$(document).ready(function () {
 	_zupra_redirect_home_to_dashboard();
 
 	_zupra_inject_logo();
@@ -244,7 +244,7 @@ function _zupra_inject_home() {
  * not .desk-sidebar.  This ensures a "Home" link appears at the very top of
  * that filter sidebar so users can navigate back from any list view.
  *
- * Called with a short delay on frappe.ready() and on every page-change so it
+ * Called with a short delay on $(document).ready() and on every page-change so it
  * works for both hard-loads and Frappe's SPA navigation.
  */
 function _zupra_inject_home_in_list_sidebar() {
@@ -782,7 +782,7 @@ function _zupra_bind_resize() {
 /**
  * Adds body.z-inner-page on every non-home route so CSS Section 14 targets
  * list / form / module pages without affecting the home workspace.
- * Called on frappe.ready, page-change, and frappe.after_ajax.
+ * Called on $(document).ready, page-change, and frappe.after_ajax.
  */
 function _zupra_scope_inner_page() {
 	var route = frappe.get_route ? frappe.get_route() : [];

@@ -102,6 +102,8 @@ function _zupra_redirect_home_to_dashboard() {
 	var isAppHomePath =
 		path === "/app" ||
 		path === "/app/home" ||
+		path === "/desk" ||
+		path === "/desk/home" ||
 		first === "" ||
 		first === "home" ||
 		first === "modules";

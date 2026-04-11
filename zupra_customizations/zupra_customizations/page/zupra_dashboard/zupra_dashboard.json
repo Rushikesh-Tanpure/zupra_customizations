@@ -1,12 +1,12 @@
 {
-    "creation": "2026-03-26 00:00:00.000000",
-    "doctype": "Page",
-    "icon": "dashboard",
-    "module": "Zupra Customizations",
-    "name": "zupra-dashboard",
-    "page_name": "zupra-dashboard",
-    "roles": [],
-    "standard": "Yes",
-    "system_manager_editable": 1,
-    "title": "Welcome \u2014 Zupra Tech"
+  "creation": "2026-03-26 00:00:00.000000",
+  "doctype": "Page",
+  "icon": "dashboard",
+  "module": "Zupra Customizations",
+  "name": "zupra-dashboard",
+  "page_name": "zupra-dashboard",
+  "roles": [],
+  "standard": "Yes",
+  "system_manager_editable": 1,
+  "title": "Welcome \u2014 Zupra Tech"
 }

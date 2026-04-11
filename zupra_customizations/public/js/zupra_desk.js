@@ -89,7 +89,7 @@ frappe.ready(function () {
  * Keep a small guard so route churn does not cause loops.
  */
 function _zupra_redirect_home_to_dashboard() {
-	if (!frappe || !frappe.get_route || !frappe.set_route) return;
+	if (!frappe || !frappe.get_route) return;
 
 	var route = frappe.get_route() || [];
 	var first = route[0] || "";
@@ -98,19 +98,16 @@ function _zupra_redirect_home_to_dashboard() {
 	var path = (window.location.pathname || "").replace(/\/+$/, "");
 	var hash = (window.location.hash || "").replace(/^#/, "");
 
-	// Redirect only from explicit Home URLs; never from list/form/module routes.
+	// Redirect only from app home URLs; never from list/form/module routes.
 	var isAppHomePath = path === "/app" || path === "/app/home";
-	var isDeskHomePath = path === "/desk" || path === "/desk/home";
-	var isHomeHash = !hash || hash === "home" || hash === "desk";
-
-	if (!(isAppHomePath || (isDeskHomePath && isHomeHash))) return;
+	if (!isAppHomePath) return;
 
 	var now = Date.now();
-	if (window.__zupra_dash_redirect_ts && now - window.__zupra_dash_redirect_ts < 800) {
+	if (window.__zupra_dash_redirect_ts && now - window.__zupra_dash_redirect_ts < 1200) {
 		return;
 	}
 	window.__zupra_dash_redirect_ts = now;
-	frappe.set_route("zupra-dashboard");
+	window.location.assign("/app/zupra-dashboard");
 }
 
 // ── 0a. Sync navbar height → CSS custom property ─────────────────────────

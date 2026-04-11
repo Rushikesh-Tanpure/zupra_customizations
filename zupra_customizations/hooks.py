@@ -40,6 +40,11 @@ app_include_js = [
     "/assets/zupra_customizations/js/zupra_desk.js"
 ]
 
+# Import app fixtures during install/migrate.
+fixtures = [
+	"Custom Field"
+]
+
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "zupra_customizations/public/scss/website"
 
@@ -148,6 +153,12 @@ app_include_js = [
 # 	}
 # }
 
+doc_events = {
+    "Quotation": {
+        "before_validate": "zupra_customizations.overrides.quotation.set_party_name"
+    }
+}
+
 # Scheduled Tasks
 # ---------------
 
@@ -188,6 +199,10 @@ app_include_js = [
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "zupra_customizations.event.get_events"
 # }
+
+override_whitelisted_methods = {
+    "erpnext.selling.doctype.quotation.quotation.make_sales_order": "zupra_customizations.overrides.quotation.make_sales_order"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,

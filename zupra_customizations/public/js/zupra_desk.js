@@ -107,7 +107,7 @@ function _zupra_redirect_home_to_dashboard() {
 		return;
 	}
 	window.__zupra_dash_redirect_ts = now;
-	window.location.assign("/app/zupra-dashboard");
+	window.location.assign("/desk#zupra-dashboard");
 }
 
 // ── 0a. Sync navbar height → CSS custom property ─────────────────────────

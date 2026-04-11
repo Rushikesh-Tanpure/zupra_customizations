@@ -93,23 +93,29 @@ function _zupra_redirect_home_to_dashboard() {
 
 	var route = frappe.get_route() || [];
 	var first = route[0] || "";
+
+	// Already on zupra dashboard — do nothing
 	if (first === "zupra-dashboard") return;
 
+	// Redirect from all home/root routes
 	var path = (window.location.pathname || "").replace(/\/+$/, "");
-	var hash = (window.location.hash || "").replace(/^#/, "");
+	var isAppHomePath =
+		path === "/app" ||
+		path === "/app/home" ||
+		first === "" ||
+		first === "home" ||
+		first === "modules";
 
-	// Redirect only from app home URLs; never from list/form/module routes.
-	var isAppHomePath = path === "/app" || path === "/app/home";
 	if (!isAppHomePath) return;
 
+	// Debounce to prevent redirect loops
 	var now = Date.now();
 	if (window.__zupra_dash_redirect_ts && now - window.__zupra_dash_redirect_ts < 1200) {
 		return;
 	}
 	window.__zupra_dash_redirect_ts = now;
-	window.location.assign("/desk#zupra-dashboard");
+	frappe.set_route("zupra-dashboard");
 }
-
 // ── 0a. Sync navbar height → CSS custom property ─────────────────────────
 /**
  * Measures the real rendered navbar height and writes it to --z-navbar-h

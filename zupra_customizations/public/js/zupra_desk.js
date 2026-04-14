@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════
-//  ZUPRA TECH — Global Desk JS  (Frappe v16)  v2.1
+//  ZUPRA TECH — Global Desk JS  (Frappe v15)  v2.0
 //
 //  1. Logo injection       — "Z" badge + "Zupra Tech" (belt-and-suspenders)
 //  2. Sidebar overflow     — measures height, hides overflow items, adds
@@ -7,9 +7,7 @@
 //  3. Sidebar active sync  — keeps selected state on route change
 // ═══════════════════════════════════════════════════════════════════════════
 
-$(document).ready(function () {
-	_zupra_redirect_home_to_dashboard();
-
+frappe.ready(function () {
 	_zupra_inject_logo();
 	_zupra_sync_navbar_height(); // set --z-navbar-h CSS var from real DOM measurement
 	_zupra_toggle_page_head(); // hide/show page-head based on action buttons
@@ -59,8 +57,6 @@ $(document).ready(function () {
 
 	// Re-evaluate page-head visibility on every route/page change
 	$(document).on("page-change", function () {
-		_zupra_redirect_home_to_dashboard();
-
 		// Small delay so Frappe finishes rendering action buttons first
 		setTimeout(_zupra_toggle_page_head, 80);
 		setTimeout(_zupra_lock_logo_position, 100); // Issue 4
@@ -83,41 +79,6 @@ $(document).ready(function () {
 	});
 });
 
-// ── 0. Redirect Desk Home to Zupra Dashboard ─────────────────────────────
-/**
- * Forces /app and /app/home to open the custom dashboard page.
- * Keep a small guard so route churn does not cause loops.
- */
-function _zupra_redirect_home_to_dashboard() {
-	if (!frappe || !frappe.get_route) return;
-
-	var route = frappe.get_route() || [];
-	var first = route[0] || "";
-
-	// Already on zupra dashboard — do nothing
-	if (first === "zupra-dashboard") return;
-
-	// Redirect from all home/root routes
-	var path = (window.location.pathname || "").replace(/\/+$/, "");
-	var isAppHomePath =
-		path === "/app" ||
-		path === "/app/home" ||
-		path === "/desk" ||
-		path === "/desk/home" ||
-		first === "" ||
-		first === "home" ||
-		first === "modules";
-
-	if (!isAppHomePath) return;
-
-	// Debounce to prevent redirect loops
-	var now = Date.now();
-	if (window.__zupra_dash_redirect_ts && now - window.__zupra_dash_redirect_ts < 1200) {
-		return;
-	}
-	window.__zupra_dash_redirect_ts = now;
-	frappe.set_route("zupra-dashboard");
-}
 // ── 0a. Sync navbar height → CSS custom property ─────────────────────────
 /**
  * Measures the real rendered navbar height and writes it to --z-navbar-h
@@ -252,7 +213,7 @@ function _zupra_inject_home() {
  * not .desk-sidebar.  This ensures a "Home" link appears at the very top of
  * that filter sidebar so users can navigate back from any list view.
  *
- * Called with a short delay on $(document).ready() and on every page-change so it
+ * Called with a short delay on frappe.ready() and on every page-change so it
  * works for both hard-loads and Frappe's SPA navigation.
  */
 function _zupra_inject_home_in_list_sidebar() {
@@ -790,7 +751,7 @@ function _zupra_bind_resize() {
 /**
  * Adds body.z-inner-page on every non-home route so CSS Section 14 targets
  * list / form / module pages without affecting the home workspace.
- * Called on $(document).ready, page-change, and frappe.after_ajax.
+ * Called on frappe.ready, page-change, and frappe.after_ajax.
  */
 function _zupra_scope_inner_page() {
 	var route = frappe.get_route ? frappe.get_route() : [];
